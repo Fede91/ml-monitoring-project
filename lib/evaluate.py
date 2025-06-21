@@ -9,6 +9,7 @@ if __name__ == "__main__":
   parser.add_argument("--dataset", default="../data/data.csv", help="Path to the CSV dataset")
   parser.add_argument('--base', default='../metrics/base_metrics.json', help='Path to the base metrics file')
   parser.add_argument("--new", default="../metrics/new_metrics.json", help="Path to the output metrics file")
+  parser.add_argument("--model", default="../model", help="Folder path to save the model")
   args = parser.parse_args()
 
   X, y = load_dataset(args.dataset)

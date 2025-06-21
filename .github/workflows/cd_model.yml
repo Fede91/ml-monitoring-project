@@ -35,7 +35,7 @@ jobs:
         run: pip install -r requirements.txt
 
       - name: Run evaluation
-        run: python ./lib/evaluate.py --dataset ./data/data.csv --base ./metrics/base_metrics.json --new ./metrics/new_metrics.json
+        run: python ./lib/evaluate.py --dataset ./data/data.csv --base ./metrics/base_metrics.json --new ./metrics/new_metrics.json --model ./model
 
       - name: Deploy model on Hugging Face
         if: ${{ success() }} # only if the evaluation script terminates with exit 0 (model is improved)
