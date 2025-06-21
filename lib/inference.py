@@ -102,6 +102,8 @@ def evaluate_predictions(y, predictions):
 if __name__ == '__main__':
   parser = argparse.ArgumentParser()
   parser.add_argument('--dataset', default='./data/data.csv', help='Path to the CSV dataset')
+  parser.add_argument("--model", default="./model", help="Folder path to save the model")
+  parser.add_argument("--metrics", default="./metrics/base_metrics.json", help="Path to save the metrics file")
   args = parser.parse_args()
 
   if not os.path.exists(args.dataset):
@@ -114,10 +116,12 @@ if __name__ == '__main__':
 
   metrics = evaluate_predictions(y, predictions)
 
-  # model.save_pretrained("../model/")
-  # tokenizer.save_pretrained("../model/")
+  model.save_pretrained(args.model)
+  tokenizer.save_pretrained(args.model)
 
-  # with open('../metrics/base_metrics.json', 'w') as f:
-  #   json.dump(accuracy, f)
+  with open(args.metrics, 'w') as f:
+    json.dump(metrics, f)
 
-  print(metrics)
+  print("Inference completed. Model saved in", args.model)
+  print("Metrics saved in", args.metrics)
+  print(json.dumps(metrics, indent=2))

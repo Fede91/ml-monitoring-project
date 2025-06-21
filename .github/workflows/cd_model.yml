@@ -35,14 +35,20 @@ jobs:
         run: pip install -r requirements.txt
 
       - name: Run evaluation
-        run: python ./lib/evaluate.py --dataset ./data/data.csv --output ./metrics/new_metrics.json
-
-      - name: Compare metrics
-        run: python ./lib/metrics.py --base ./metrics/base_metrics.json --new ./metrics/new_metrics.json
+        run: python ./lib/evaluate.py --dataset ./data/data.csv --base ./metrics/base_metrics.json --new ./metrics/new_metrics.json
 
       - name: Deploy model on Hugging Face
-        if: ${{ success() }} # only if the compare_metrics.py script terminates with exit 0 (model is improved)
+        if: ${{ success() }} # only if the evaluation script terminates with exit 0 (model is improved)
         run: python ./lib/deploy_model.py --path ./model
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
           HF_REPO_ID: ${{ secrets.HF_REPO_ID }}
+
+      - name: Commit new metrics
+        if: ${{ success() }}
+        run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git add ./metrics/new_metrics.json
+          git commit -m "Update metrics after improvement"
+          git push
