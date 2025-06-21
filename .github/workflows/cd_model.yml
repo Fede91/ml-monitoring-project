@@ -1,0 +1,48 @@
+# Model Evaluation, Retraining and Deployment
+
+# This workflow is used to evaluate the model, retrain it if the accuracy is not good enough and deploy the new model.
+
+# The workflow is triggered by a push to the repository in the following paths:
+# - data/**
+# - lib/**
+# - model/**
+
+name: Model Evaluation, Retraining and Deployment
+
+on:
+  push:
+    paths:
+      - "data/**"
+      - "lib/**"
+      - "model/**"
+  schedule:
+    - cron: "0 6 * * *"
+  workflow_dispatch:
+
+jobs:
+  evaluate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Python 3.10
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+
+      - name: Install requirements
+        run: pip install -r requirements.txt
+
+      - name: Run evaluation
+        run: python ./lib/evaluate.py --dataset ./data/data.csv --output ./metrics/new_metrics.json
+
+      - name: Compare metrics
+        run: python ./lib/metrics.py --base ./metrics/base_metrics.json --new ./metrics/new_metrics.json
+
+      - name: Deploy model on Hugging Face
+        if: ${{ success() }} # only if the compare_metrics.py script terminates with exit 0 (model is improved)
+        run: python ./lib/deploy_model.py --path ./model
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          HF_REPO_ID: ${{ secrets.HF_REPO_ID }}
