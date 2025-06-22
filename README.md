@@ -4,7 +4,7 @@ colorFrom: gray
 colorTo: red
 sdk: gradio
 pinned: false
-sdk_version: 4.44.0
+sdk_version: 4.44.1
 app_file: app/app.py
 ---
 
@@ -16,3 +16,8 @@ app_file: app/app.py
   e genero il modello che poi sarà pubblicato su hugging face
 
 - Le volte successive, eseguiremo lo script di addestramento per aggiornare il modello e pubblicarlo
+
+In gradio visualizzare la distribuzione delle etichette ed individuare quella più probabile.
+Questo rientra nel monitoraggio.
+Inoltre dare la possibilità di inserire un testo, una etichetta e fare inferenza
+-> registrare i log che verranno usati per il riaddestramento
