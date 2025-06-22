@@ -1,3 +1,13 @@
+---
+title: Corporate Sentiment Monitoring
+colorFrom: gray
+colorTo: red
+sdk: gradio
+pinned: false
+sdk_version: 4.44.0
+app_file: app/app.py
+---
+
 # Step 1:
 
 - Download dataset Twitter Sentiment Analysis https://www.kaggle.com/datasets/jp797498e/twitter-entity-sentiment-analysis
