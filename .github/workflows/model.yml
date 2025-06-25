@@ -7,14 +7,13 @@
 # - lib/**
 # - model/**
 
-name: Model Evaluation, Retraining and Deployment
+name: Model Retraining and Deployment
 
 on:
   push:
     paths:
       - "data/**"
       - "lib/**"
-      - "model/**"
   schedule:
     - cron: "0 6 * * *"
   workflow_dispatch:
@@ -23,7 +22,7 @@ permissions:
   contents: write
 
 jobs:
-  evaluate:
+  training:
     runs-on: ubuntu-latest
 
     steps:
