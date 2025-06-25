@@ -14,7 +14,21 @@ jobs:
         with:
           fetch-depth: 0
           lfs: true
+
+      - name: Setup Python 3.10
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+
+      - name: Install requirements
+        run: pip install -r requirements.txt
+
+      - name: Run tests
+        run: |
+          pytest tests/app/test_model.py
+
       - name: Push to hub
+        if: success()
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
         run: git push --force https://0xfedev:$HF_TOKEN@huggingface.co/spaces/0xfedev/corporate-sentiment-monitoring main
