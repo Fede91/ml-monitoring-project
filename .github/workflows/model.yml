@@ -37,15 +37,10 @@ jobs:
       - name: Install requirements
         run: pip install -r requirements.txt
 
-      - name: Run evaluation
-        run: python ./lib/evaluate_model.py --dataset ./data/data.csv --base ./metrics/base_metrics.json --new ./metrics/new_metrics.json --output ./model
-
-      - name: Deploy model on Hugging Face
-        if: ${{ success() }} # only if the evaluation script terminates with exit 0 (model is improved)
-        run: python ./lib/deploy_model.py --path ./model
+      - name: Run Train script
+        run: python ./lib/train.py --trainset ./data/train.csv --validationset ./data/validation.csv --metrics ./metrics/base_metrics.json --model ./model
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
-          HF_REPO_ID: ${{ secrets.HF_REPO_ID }}
 
       - name: Commit new metrics
         if: ${{ success() }}
@@ -53,5 +48,5 @@ jobs:
           git config user.name github-actions
           git config user.email github-actions@github.com
           git add ./metrics/new_metrics.json
-          git commit -m "Update metrics after improvement"
+          git commit -m "Update metrics after training"
           git push

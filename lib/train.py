@@ -1,13 +1,14 @@
 # Rif https://github.com/cardiffnlp/timelms/blob/main/scripts/train_sentiment.py
 import argparse
 from datasets import load_dataset
-from model import model, tokenizer, device
+from model import model, tokenizer, device, MODEL_NAME
 from transformers import Trainer, TrainingArguments, DataCollatorWithPadding
 import numpy as np
 from sklearn.metrics import accuracy_score
 import evaluate
 import json
 from metrics import compare_metrics, save_metrics
+import os
 
 metric = evaluate.load('accuracy')
 
@@ -24,13 +25,7 @@ def compute_metrics(eval_pred):
   logits, labels = eval_pred
   predictions = np.argmax(logits, axis=-1)
 
-  # print(f"Accuracy: {accuracy_score(labels, predictions)}")
-
   return metric.compute(predictions=predictions, references=labels)
-
-  # return {
-  #  "accuracy": accuracy_score(labels, preds)
-  #}
 
 if __name__ == "__main__":
   parser = argparse.ArgumentParser()
@@ -39,7 +34,7 @@ if __name__ == "__main__":
   parser.add_argument("--model", default="./model", help="Folder path to save the model")
   parser.add_argument("--metrics", default="./metrics/base_metrics.json", help="Path to save the metrics file")
   args = parser.parse_args()
-
+  
   dataset = load_dataset('csv',
                          data_files={'train': args.trainset, 'validation': args.validationset})
 
@@ -49,8 +44,8 @@ if __name__ == "__main__":
 
   training_args = TrainingArguments(
     do_eval=True,
-    output_dir='./train',
-    logging_dir='./logs',
+    output_dir=args.model,
+    # logging_dir='./logs',
     num_train_epochs=1,
     logging_strategy='epoch',
     learning_rate=1e-05,
@@ -58,6 +53,9 @@ if __name__ == "__main__":
     save_strategy="epoch",
     load_best_model_at_end=True,
     metric_for_best_model='eval_accuracy',
+    push_to_hub_token=os.getenv("HF_TOKEN"),
+    push_to_hub=True,
+    hub_model_id=MODEL_NAME,
   )
 
   trainer = Trainer(
@@ -73,9 +71,6 @@ if __name__ == "__main__":
   # 6. Addestra (incrementale se il modello era già fine-tunato)
   trainer.train()
 
-  # trainer.create_model_card()
-  
-
   eval_results = trainer.evaluate()
 
   new_metrics = {
@@ -88,11 +83,9 @@ if __name__ == "__main__":
     base_metrics = json.load(f)
 
   if compare_metrics(base_metrics, new_metrics):
-    save_metrics(new_metrics, args.base_metrics)
+    save_metrics(new_metrics, args.metrics)
 
-    # model.save_pretrained(args.output)
-    #tokenizer.save_pretrained(args.output)
-    trainer.save_model(args.model)
+    trainer.push_to_hub()
 
     exit(0)
   else:

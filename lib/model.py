@@ -4,8 +4,10 @@ from tqdm import tqdm
 from torch.nn import functional as F
 from sklearn.metrics import accuracy_score
 
-tokenizer = AutoTokenizer.from_pretrained("0xfedev/corporate-sentiment")
-model = AutoModelForSequenceClassification.from_pretrained("0xfedev/corporate-sentiment")
+MODEL_NAME="0xfedev/corporate-sentiment"
+
+tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
+model = AutoModelForSequenceClassification.from_pretrained(MODEL_NAME)
 
 model.eval()
 device = 'cpu' # torch.device('mps' if torch.backends.mps.is_available() else 'cpu')
