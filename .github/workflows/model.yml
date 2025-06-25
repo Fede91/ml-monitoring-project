@@ -46,6 +46,6 @@ jobs:
         run: |
           git config user.name github-actions
           git config user.email github-actions@github.com
-          git add ./metrics/new_metrics.json
+          git add ./metrics/base_metrics.json
           git commit -m "Update metrics after training"
           git push
