@@ -10,10 +10,11 @@ app_file: app/app.py
 
 # Step 1:
 
-- Download dataset Twitter Sentiment Analysis https://www.kaggle.com/datasets/jp797498e/twitter-entity-sentiment-analysis
+- Download dataset Twitter Sentiment Analysis https://www.kaggle.com/datasets/jp797498e/twitter-entity-sentiment-analysis e lo divido in train e validation sets.
 
-- Faccio il primo giro di inferenza per raccogliere il primo dato di accuratezza sul dataset iniziale e lo salvo come "base_matrics"
-  e genero il modello che poi sarà pubblicato su hugging face
+- Faccio il primo giro di inferenza per raccogliere il primo dato di accuratezza sul validation e lo salvo come "base_matrics"
+- genero il modello
+- pubblico su hugging face
 
 - Le volte successive, eseguiremo lo script di addestramento per aggiornare il modello e pubblicarlo
 

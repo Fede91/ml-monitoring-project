@@ -61,25 +61,12 @@ def run_predictions(X):
     target_column: The column name of the target column.
   """
 
-  # Read the csv file
-  # df = pd.read_csv(csv_path)
-
-  # X = df[text_column]
-  # y = df[target_column]
-
   predictions = []
 
-  # or text, target in zip( X, y ):
   for text in tqdm(X):
     prediction, _ = predict_sentiment(str(text))
 
-    # if str(target) ==  prediction:
-    #   n_correct_predictions += 1
     predictions.append(prediction)
-  
-  # return {
-  #   'accuracy': n_correct_predictions / df.shape[0] 
-  # }
 
   return predictions
 
@@ -102,7 +89,7 @@ def evaluate_predictions(y, predictions):
 if __name__ == '__main__':
   parser = argparse.ArgumentParser()
   parser.add_argument('--dataset', default='./data/validation.csv', help='Path to the CSV dataset')
-  parser.add_argument("--model", default="./model", help="Folder path to save the model")
+  parser.add_argument("--output", default="./model", help="Folder path to save the model")
   parser.add_argument("--metrics", default="./metrics/base_metrics.json", help="Path to save the metrics file")
   args = parser.parse_args()
 
@@ -116,12 +103,12 @@ if __name__ == '__main__':
 
   metrics = evaluate_predictions(y, predictions)
 
-  # model.save_pretrained(args.model)
-  # tokenizer.save_pretrained(args.model)
+  model.save_pretrained(args.model)
+  tokenizer.save_pretrained(args.model)
 
   with open(args.metrics, 'w') as f:
     json.dump(metrics, f)
 
-  print("Inference completed. Model saved in", args.model)
+  print("Inference completed. Model saved in", args.output)
   print("Metrics saved in", args.metrics)
   print(json.dumps(metrics, indent=2))
