@@ -17,7 +17,7 @@ def compare_metrics(base_metrics, new_metrics):
   if not new_metrics or not base_metrics:
     return False
 
-  return new_metrics['accuracy'] - base_metrics['accuracy'] >= 0.02
+  return abs(new_metrics['accuracy'] - base_metrics['accuracy']) >= 0.02
 
 def save_metrics(metrics, output_path):
   """
