@@ -1,37 +1,30 @@
 import argparse
-from model import model, tokenizer, run_predictions, evaluate_predictions
-from dataset import load_dataset
-from metrics import save_metrics, compare_metrics
 import json
+from model import run_predictions, evaluate_predictions
+from dataset import load_dataset
+from metrics import compare_metrics
+from datasets import load_dataset, Dataset
 
 
 if __name__ == "__main__":
   parser = argparse.ArgumentParser()
-  parser.add_argument("--dataset", default="../data/validation.csv", help="Path to the CSV dataset")
-  parser.add_argument('--base', default='../metrics/base_metrics.json', help='Path to the base metrics file')
-  parser.add_argument("--new", default="../metrics/new_metrics.json", help="Path to the output metrics file")
-  parser.add_argument("--output", default="../model", help="Folder path to save the model")
+  parser.add_argument("--dataset", default="0xfedev/corporate-sentiment-logs", help="Dataset to evaluate")
+  parser.add_argument('--metrics', default='../metrics/base_metrics.json', help='Path to the base metrics file')
   args = parser.parse_args()
 
-  X, y = load_dataset(args.dataset)
+  ds = load_dataset(args.dataset, split="train")
+
+  X, y = ds['text'], ds['target']
+
   predicions = run_predictions(X)
 
-  new_metrics = evaluate_predictions(y, predicions)
+  evaluation_metrics = evaluate_predictions(y, predicions)
 
-  print("Evaluation completed. Metrics saved in", args.new)
-  print(json.dumps(new_metrics, indent=2))
+  print(f"Evaluation metrics: {evaluation_metrics}")
 
-  with open(args.base, 'r') as f:
+  with open(args.metrics, 'r') as f:
     base_metrics = json.load(f)
 
-  if compare_metrics(base_metrics, new_metrics):
-    save_metrics(new_metrics, args.new)
+  success_code = 0 if compare_metrics(base_metrics, evaluation_metrics) else 1
 
-    model.save_pretrained(args.output)
-    tokenizer.save_pretrained(args.output)
-
-    exit(0)
-  else:
-    print("Model is not improved")
-    exit(1)  
-    
+  exit(success_code)

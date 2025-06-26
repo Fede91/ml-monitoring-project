@@ -1,0 +1,33 @@
+name: Model Monitoring
+
+on:
+  schedule:
+    - cron: "0 0 * * *"
+  workflow_dispatch:
+
+jobs:
+  monitoring:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Python 3.10
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+
+      - name: Install requirements
+        run: pip install -r requirements.txt
+
+      - name: Run Evaluation script
+        run: python ./lib/evaluate_model.py --metrics ./metrics/base_metrics.json
+
+      - name: Trigger training workflow
+        if: ${{ success() }}
+        uses: benc-uk/workflow-dispatch@v1
+        with:
+          token: ${{ secrets.GH_TOKEN }}
+          repository: Fede91/ml-monitoring-project
+          workflow: model.yml
+          ref: main
