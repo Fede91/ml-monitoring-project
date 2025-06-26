@@ -103,8 +103,8 @@ if __name__ == '__main__':
 
   metrics = evaluate_predictions(y, predictions)
 
-  model.save_pretrained(args.model)
-  tokenizer.save_pretrained(args.model)
+  model.save_pretrained(args.output)
+  tokenizer.save_pretrained(args.output)
 
   with open(args.metrics, 'w') as f:
     json.dump(metrics, f)

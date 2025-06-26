@@ -13,7 +13,7 @@ on:
   push:
     paths:
       - "data/**"
-      - "lib/**"
+      - "lib/train.py"
   schedule:
     - cron: "0 6 * * *"
   workflow_dispatch:

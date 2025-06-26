@@ -23,6 +23,15 @@ jobs:
       - name: Run Evaluation script
         run: python ./lib/evaluate_model.py --metrics ./metrics/base_metrics.json
 
+      - name: Commit new dataset
+        if: ${{ success() }}
+        run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git add ./data/train.csv
+          git commit -m "Update train dataset"
+          git push
+
       - name: Trigger training workflow
         if: ${{ success() }}
         uses: benc-uk/workflow-dispatch@v1
