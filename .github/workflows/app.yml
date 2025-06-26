@@ -1,4 +1,13 @@
-name: Sync to Hugging Face hub
+# App Deployment
+
+# This workflow is used to deploy the app to the Hugging Face hub.
+
+# The workflow is triggered by a push to the repository in the following paths:
+# - app/**
+
+# If the tests pass, the app is deployed to the Hugging Face hub.
+
+name: App Deployment
 
 on:
   push:

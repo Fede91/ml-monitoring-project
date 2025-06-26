@@ -1,3 +1,9 @@
+# Model Monitoring
+
+# This workflow is used to monitor the model and trigger the retraining if the accuracy is not good enough.
+
+# The workflow is triggered by a schedule or manually by the user.
+
 name: Model Monitoring
 
 on:

@@ -9,7 +9,16 @@ model = AutoModelForSequenceClassification.from_pretrained("0xfedev/corporate-se
 
 model.eval()
 
-def predict(text, target):
+def predict(text):
+  """
+  This function predicts the sentiment of the text.
+
+  Args:
+    text: The text to analyze.
+
+  Returns:
+    The predicted sentiment and scores.
+  """
   encoded_input = tokenizer(text, return_tensors='pt')
 
   with torch.no_grad():

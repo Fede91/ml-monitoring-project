@@ -10,12 +10,12 @@ tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
 model = AutoModelForSequenceClassification.from_pretrained(MODEL_NAME)
 
 model.eval()
-device = 'cpu' # torch.device('mps' if torch.backends.mps.is_available() else 'cpu')
+device = torch.device('mps' if torch.backends.mps.is_available() else 'cpu')
 model = model.to(device)
 
 print(f"Model loaded on {device}")
 
-# Mapping delle label (Hugging Face specifica l'ordine)
+# Label mapping (Hugging Face defines the order of the labels)
 labels = ['negative', 'neutral', 'positive']
 
 def predict_sentiment(text):

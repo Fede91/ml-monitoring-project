@@ -8,7 +8,7 @@ from tqdm import tqdm
 import argparse
 import os
 
-# Mapping delle label (Hugging Face specifica l'ordine)
+# Label mapping (Hugging Face defines the order of the labels)
 labels = ['negative', 'neutral', 'positive']
 
 tokenizer = AutoTokenizer.from_pretrained("cardiffnlp/twitter-roberta-base-sentiment-latest")
@@ -21,12 +21,22 @@ def load_dataset(csv_path,
                  target_column='sentiment'):
   """
   Load the data from the csv file.
+
+  Args:
+    csv_path: The path to the csv file.
+    text_column: The column name of the text column.
+    target_column: The column name of the target column.
+
+  Returns:
+    X: The text data.
+    y: The target data.
   """
   df = pd.read_csv(csv_path)
   X = df[text_column]
   y = df[target_column]
 
   return X, y
+
 
 def predict_sentiment(text):
   """
@@ -50,6 +60,7 @@ def predict_sentiment(text):
                                    dim=1).item()
 
     return labels[predicted_class], scores[0].tolist()
+
 
 def run_predictions(X):
   """
@@ -87,22 +98,28 @@ def evaluate_predictions(y, predictions):
   }
 
 if __name__ == '__main__':
+  # Parse the arguments
   parser = argparse.ArgumentParser()
   parser.add_argument('--dataset', default='./data/validation.csv', help='Path to the CSV dataset')
   parser.add_argument("--output", default="./model", help="Folder path to save the model")
   parser.add_argument("--metrics", default="./metrics/base_metrics.json", help="Path to save the metrics file")
   args = parser.parse_args()
 
+  # Check if the dataset file exists
   if not os.path.exists(args.dataset):
     print("Error: Dataset file does not exist")
     exit(1)
 
+  # Load the dataset
   X, y = load_dataset(args.dataset)
 
+  # Run the predictions
   predictions = run_predictions(X)
 
+  # Evaluate the predictions
   metrics = evaluate_predictions(y, predictions)
 
+  # Save the model and the tokenizer
   model.save_pretrained(args.output)
   tokenizer.save_pretrained(args.output)
 

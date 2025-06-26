@@ -8,7 +8,7 @@ from tqdm import tqdm
 import argparse
 import os
 
-# Mapping delle label (Hugging Face specifica l'ordine)
+# Label mapping (Hugging Face defines the order of the labels)
 labels = ['negative', 'neutral', 'positive']
 
 tokenizer = AutoTokenizer.from_pretrained("cardiffnlp/twitter-roberta-base-sentiment-latest")
@@ -60,27 +60,13 @@ def run_predictions(X):
     text_column: The column name of the text column.
     target_column: The column name of the target column.
   """
-
-  # Read the csv file
-  # df = pd.read_csv(csv_path)
-
-  # X = df[text_column]
-  # y = df[target_column]
-
   predictions = []
 
-  # or text, target in zip( X, y ):
   for text in tqdm(X):
     prediction, _ = predict_sentiment(str(text))
 
-    # if str(target) ==  prediction:
-    #   n_correct_predictions += 1
     predictions.append(prediction)
   
-  # return {
-  #   'accuracy': n_correct_predictions / df.shape[0] 
-  # }
-
   return predictions
 
 def evaluate_predictions(y, predictions):
@@ -115,9 +101,6 @@ if __name__ == '__main__':
   predictions = run_predictions(X)
 
   metrics = evaluate_predictions(y, predictions)
-
-  # model.save_pretrained(args.model)
-  # tokenizer.save_pretrained(args.model)
 
   with open(args.metrics, 'w') as f:
     json.dump(metrics, f)

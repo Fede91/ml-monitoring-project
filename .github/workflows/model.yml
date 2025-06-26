@@ -1,11 +1,10 @@
-# Model Evaluation, Retraining and Deployment
+# Model  Retraining and Deployment
 
-# This workflow is used to evaluate the model, retrain it if the accuracy is not good enough and deploy the new model.
+# This workflow is used to retrain the model if the accuracy is not good enough and deploy the new model.
 
 # The workflow is triggered by a push to the repository in the following paths:
 # - data/**
-# - lib/**
-# - model/**
+# - lib/train.py
 
 name: Model Retraining and Deployment
 
